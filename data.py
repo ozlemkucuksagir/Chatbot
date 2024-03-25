@@ -16,10 +16,10 @@ c.execute('''CREATE TABLE IF NOT EXISTS interview_questions
              (id INTEGER PRIMARY KEY, job_title TEXT, skill_level TEXT, category TEXT, question_type TEXT, language TEXT DEFAULT 'ENG (US)', question TEXT, answer TEXT)''')
 
 # Selenium WebDriver'ı başlatma
-driver = webdriver.Chrome()  # veya diğer tarayıcıları kullanabilirsiniz
+driver = webdriver.Chrome()
 
 # Web sitesine gidin
-driver.get("https://recooty.com/tools/interview-question-generator/")  # WEBSITE_URL'i kendi web sitesinin URL'si ile değiştirin
+driver.get("https://recooty.com/tools/interview-question-generator/")
 
 
 def select_option_by_text(select_element, option_text):
@@ -54,7 +54,7 @@ def scrape_and_save(job_title, skill_level, category, language=None):
     generate_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#root > div > div.BodyContainer > div:nth-child(4) > div.styles_IslandContainer__Q1LMo > div.styles_InputGrid__UgoNG > button')))
     generate_button.click()
 
-
+    #  Show Answers butonuna tıklama
     show_answers_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#root > div > div.BodyContainer > div:nth-child(4) > div.styles_IslandContainer__Q1LMo.styles_IC_expanded__paAaR > div.styles_Container__EnYDl.styles_ContainerActive__-e3Z6.styles_contentBody__56j3w > div.styles_MainHeading__AV-pn > div > div')))
     show_answers_button.click()
     
@@ -72,7 +72,7 @@ def scrape_and_save(job_title, skill_level, category, language=None):
         if "Opening" in question_type_text:
             question_type = "Opening Questions"
             question_text = question.text.split(". ", 1)[1]  # Soru numarasını kaldır
-            answer_text = ""
+            answer_text = "Personal answer"
         elif "Technical" in question_type_text:
             question_type = "Technical Questions"
             question_text = question.text.split(". ", 1)[1]  # Soru numarasını kaldır
@@ -80,24 +80,19 @@ def scrape_and_save(job_title, skill_level, category, language=None):
         elif "Closing" in question_type_text:
             question_type = "Closing Questions"
             question_text = question.text.split(". ", 1)[1]  # Soru numarasını kaldır
-            answer_text = ""
+            answer_text = "Personal answer"
         else:
             question_type = "Unknown"
             question_text = question.text.split(". ", 1)[1]  # Soru numarasını kaldır
             answer_text = answer.text.split(": ", 1)[1]  # Cevap başlığını kaldır
-        print("Soru:", question_text)
-        print("Cevap:", answer_text)
-        print("Question Type:", question_type)
-        print()
         # Veritabanına kaydetme
         c.execute("SELECT * FROM interview_questions WHERE question=? AND answer=?", (question_text, answer_text))
         existing_record = c.fetchone()
         if not existing_record:
             c.execute("INSERT INTO interview_questions (job_title, skill_level, category, question_type, language, question, answer) VALUES (?, ?, ?, ?, ?, ?, ?)", (job_title, skill_level, category, question_type, language, question_text, answer_text))
             conn.commit()
+
 # Kullanıcıdan girdileri alma ve işlemi gerçekleştirme
-
-
 job_title = input("Job Title: ")
 skill_level = input("Skill level: ")
 category = input("Category: ")
