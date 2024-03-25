@@ -13,7 +13,7 @@ c = conn.cursor()
 
 # Veritabanı tablosunu oluşturma
 c.execute('''CREATE TABLE IF NOT EXISTS interview_questions
-             (id INTEGER PRIMARY KEY, job_title TEXT, skill_level TEXT, category TEXT, question_type TEXT, language TEXT DEFAULT 'ENG (US)', question TEXT, answer TEXT)''')
+             (id INTEGER PRIMARY KEY, job_title TEXT, skill_level TEXT, category TEXT, question_type TEXT, language TEXT, question TEXT, answer TEXT)''')
 
 # Selenium WebDriver'ı başlatma
 driver = webdriver.Chrome()
@@ -55,34 +55,31 @@ def scrape_and_save(job_title, skill_level, category, language=None):
     generate_button.click()
 
     #  Show Answers butonuna tıklama
-    show_answers_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#root > div > div.BodyContainer > div:nth-child(4) > div.styles_IslandContainer__Q1LMo.styles_IC_expanded__paAaR > div.styles_Container__EnYDl.styles_ContainerActive__-e3Z6.styles_contentBody__56j3w > div.styles_MainHeading__AV-pn > div > div')))
+    show_answers_button = WebDriverWait(driver, 100).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#root > div > div.BodyContainer > div:nth-child(4) > div.styles_IslandContainer__Q1LMo.styles_IC_expanded__paAaR > div.styles_Container__EnYDl.styles_ContainerActive__-e3Z6.styles_contentBody__56j3w > div.styles_MainHeading__AV-pn > div > div')))
     show_answers_button.click()
     
     # Soru ve cevapları bulma
     question_elements = driver.find_elements(By.XPATH, "//span[@class='styles_Question__FRNnc']")
     answer_elements = driver.find_elements(By.XPATH, "//p[@class='styles_AnswerText__Y1oHC']")
     
+    time.sleep(10)
+    
     # Soru ve cevapları ekrana yazdırma
     for question, answer in zip(question_elements, answer_elements):
         # Soru tipini belirleme
 
         question_heading = question.find_element(By.XPATH, "./ancestor::div[@class='styles_Topic__oDaCh']/div[@class='styles_Heading__FSyPb']")
-
         question_type_text = question_heading.find_element(By.TAG_NAME, 'h2').text
         if "Opening" in question_type_text:
             question_type = "Opening Questions"
             question_text = question.text.split(". ", 1)[1]  # Soru numarasını kaldır
             answer_text = "Personal answer"
-        elif "Technical" in question_type_text:
-            question_type = "Technical Questions"
-            question_text = question.text.split(". ", 1)[1]  # Soru numarasını kaldır
-            answer_text = answer.text.split(": ", 1)[1]  # Cevap başlığını kaldır
         elif "Closing" in question_type_text:
             question_type = "Closing Questions"
             question_text = question.text.split(". ", 1)[1]  # Soru numarasını kaldır
             answer_text = "Personal answer"
         else:
-            question_type = "Unknown"
+            question_type = question_type_text
             question_text = question.text.split(". ", 1)[1]  # Soru numarasını kaldır
             answer_text = answer.text.split(": ", 1)[1]  # Cevap başlığını kaldır
         # Veritabanına kaydetme
@@ -96,7 +93,7 @@ def scrape_and_save(job_title, skill_level, category, language=None):
 job_title = input("Job Title: ")
 skill_level = input("Skill level: ")
 category = input("Category: ")
-language = input("Language (optional): ")
+language = input("Language : ")
 
 scrape_and_save(job_title, skill_level, category, language)
 
