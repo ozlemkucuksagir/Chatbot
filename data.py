@@ -8,12 +8,12 @@ import random
 import sqlite3
 
 # SQLite veritabanı bağlantısı oluşturma
-conn = sqlite3.connect('interview_questions3.db')
+conn = sqlite3.connect('interview_questions.db')
 c = conn.cursor()
 
 # Veritabanı tablosunu oluşturma
 c.execute('''CREATE TABLE IF NOT EXISTS interview_questions
-             (id INTEGER PRIMARY KEY, job_title TEXT, difficulty TEXT, category TEXT, question_type TEXT, language TEXT, question TEXT, answer TEXT)''')
+             (id INTEGER PRIMARY KEY, job_title TEXT, skill_level TEXT, category TEXT, question_type TEXT, language TEXT DEFAULT 'ENG (US)', question TEXT, answer TEXT)''')
 
 # Selenium WebDriver'ı başlatma
 driver = webdriver.Chrome()  # veya diğer tarayıcıları kullanabilirsiniz
@@ -28,7 +28,7 @@ def select_option_by_text(select_element, option_text):
             option.click()
             break
 
-def scrape_and_save(job_title, difficulty, category, language=None):
+def scrape_and_save(job_title, skill_level, category, language=None):
     # Job title'i giriş kutusuna yazma
 
 
@@ -37,8 +37,8 @@ def scrape_and_save(job_title, difficulty, category, language=None):
     job_title_input.send_keys(job_title)
     
     # Zorluk seviyesini seçme
-    difficulty_select = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#root > div > div.BodyContainer > div:nth-child(4) > div.styles_IslandContainer__Q1LMo > div.styles_InputGrid__UgoNG > div:nth-child(2) > select')))
-    select_option_by_text(difficulty_select, difficulty)
+    skill_level_select = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#root > div > div.BodyContainer > div:nth-child(4) > div.styles_IslandContainer__Q1LMo > div.styles_InputGrid__UgoNG > div:nth-child(2) > select')))
+    select_option_by_text(skill_level_select, skill_level)
     
     # Soru tipini seçme
     category_select = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#root > div > div.BodyContainer > div:nth-child(4) > div.styles_IslandContainer__Q1LMo > div.styles_InputGrid__UgoNG > div:nth-child(3) > select')))
@@ -93,17 +93,17 @@ def scrape_and_save(job_title, difficulty, category, language=None):
         c.execute("SELECT * FROM interview_questions WHERE question=? AND answer=?", (question_text, answer_text))
         existing_record = c.fetchone()
         if not existing_record:
-            c.execute("INSERT INTO interview_questions (job_title, difficulty, category, question_type, language, question, answer) VALUES (?, ?, ?, ?, ?, ?, ?)", (job_title, difficulty, category, question_type, language, question_text, answer_text))
+            c.execute("INSERT INTO interview_questions (job_title, skill_level, category, question_type, language, question, answer) VALUES (?, ?, ?, ?, ?, ?, ?)", (job_title, skill_level, category, question_type, language, question_text, answer_text))
             conn.commit()
 # Kullanıcıdan girdileri alma ve işlemi gerçekleştirme
 
 
 job_title = input("Job Title: ")
-difficulty = input("Difficulty: ")
+skill_level = input("Skill level: ")
 category = input("Category: ")
 language = input("Language (optional): ")
 
-scrape_and_save(job_title, difficulty, category, language)
+scrape_and_save(job_title, skill_level, category, language)
 
 # Veritabanı bağlantısını kapatma
 conn.close()
