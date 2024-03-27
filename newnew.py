@@ -16,11 +16,7 @@ c = conn.cursor()
 c.execute('''CREATE TABLE IF NOT EXISTS interview_questions
              (id INTEGER PRIMARY KEY, job_title TEXT, skill_level TEXT, category TEXT, evaluator TEXT , question_type TEXT, language TEXT, question TEXT, answer TEXT)''')
 
-# Selenium WebDriver'ı başlatma
-driver = webdriver.Chrome()
 
-# Web sitesine gidin
-driver.get("https://recooty.com/tools/interview-question-generator/")
 
 def select_option_by_text(select_element, option_text):
     for option in select_element.find_elements(By.TAG_NAME, 'option'):
@@ -74,6 +70,7 @@ def scrape_and_save(job_title, skill_level, category, language=None):
     if scrape_and_save.first_iteration:
         show_answers_button.click()
         scrape_and_save.first_iteration = False
+
     
     # Soru ve cevapları bulma
     question_elements = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.XPATH, "//span[@class='styles_Question__FRNnc']")))
@@ -107,26 +104,35 @@ def scrape_and_save(job_title, skill_level, category, language=None):
         if not existing_record:
             c.execute("INSERT INTO interview_questions (job_title, skill_level, category, question_type, evaluator, language, question, answer) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (job_title, skill_level, category, question_type, evaluator,language, question_text, answer_text))
             conn.commit()
-# İlk iterasyon için bir bayrak oluşturma
-scrape_and_save.first_iteration = True
-# Kullanıcıdan girdileri alma ve işlemi gerçekleştirme
-iterations = 27 # Yapılacak işlem sayısı
-for _ in range(iterations):
-
     
-    job_title = "Backend Developer"
-    skill_level = "Junior"
-    category = "Technical"
-    language = "ENG (US)"
-    #job_title = input("Job Title: ")
-    #skill_level = input("Skill level: ")
-    #category = input("Category: ")
-    #language = input("Language : ")
+    
+# İlk iterasyon için bir bayrak oluşturma
 
-    scrape_and_save(job_title, skill_level, category, language)
+# Kullanıcıdan girdileri alma ve işlemi gerçekleştirme
+iterations = 3 # Yapılacak işlem sayısı
+innerIter= 10
+for _ in range(iterations):
+    
+    # Selenium WebDriver'ı başlatma
+    driver = webdriver.Chrome()
 
+    # Web sitesine gidin
+    driver.get("https://recooty.com/tools/interview-question-generator/")
+    scrape_and_save.first_iteration = True
+    for i in range (innerIter):
+        job_title = "Backend Developer"
+        skill_level = "Mid-level"
+        category = "Technical"
+        language = "ENG (US)"
+        #job_title = input("Job Title: ")
+        #skill_level = input("Skill level: ")
+        #category = input("Category: ")
+        #language = input("Language : ")
+
+        scrape_and_save(job_title, skill_level, category, language)
+        print("i: ",i)
+    # Mevcut driver'ı kapat
+    driver.quit()
+    print("_: ",_)
 # Veritabanı bağlantısını kapatma
 conn.close()
-
-# WebDriver'ı kapatma
-driver.quit()
