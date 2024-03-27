@@ -113,25 +113,24 @@ iterations = 8 # Yapılacak işlem sayısı
 innerIter= 10
 job_titles=["Web Developer","Software Engineer","Software Developer","Front End Developer","Network Engineer","Android Developer","Salesforce Developer","IOS Developer","SQL Developer",".NET Developer","	Python Developer","Game Developer","Data Engineer","Full Stack Developer","React Developer","UI Developer"]
 skill_levels=["Junior","Mid-level","Senior"]
-for _ in range(iterations):
-    
-    # Selenium WebDriver'ı başlatma
-    driver = webdriver.Chrome()
-
-    # Web sitesine gidin
-    driver.get("https://recooty.com/tools/interview-question-generator/")
-    scrape_and_save.first_iteration = True
-    for i in range (innerIter):
-        for title in range(job_titles):
-            for level in range (skill_levels):
+for title in range(job_titles):
+    for level in range (skill_levels):
+        for _ in range(iterations):
+            job_titles.__len__
+            # Selenium WebDriver'ı başlatma
+            driver = webdriver.Chrome()
+            # Web sitesine gidin
+            driver.get("https://recooty.com/tools/interview-question-generator/")
+            scrape_and_save.first_iteration = True
+            for i in range (innerIter):
                 job_title = title
                 skill_level = level
                 category = "Technical"
                 language = "ENG (US)"
                 scrape_and_save(job_title, skill_level, category, language)
                 print("i: ",i)
-    # Mevcut driver'ı kapat
-    driver.quit()
-    print("_: ",_)
+            # Mevcut driver'ı kapat
+            driver.quit()
+            print("_: ",_)
 # Veritabanı bağlantısını kapatma
 conn.close()
