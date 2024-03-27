@@ -66,15 +66,28 @@ def scrape_and_save(job_title, skill_level, category, language=None):
     generate_button.click()
     
     #  Show Answers butonuna sadece ilk iterasyonda tıklama
-    show_answers_button = WebDriverWait(driver, 500).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#root > div > div.BodyContainer > div:nth-child(4) > div.styles_IslandContainer__Q1LMo.styles_IC_expanded__paAaR > div.styles_Container__EnYDl.styles_ContainerActive__-e3Z6.styles_contentBody__56j3w > div.styles_MainHeading__AV-pn > div > div')))
-    if scrape_and_save.first_iteration:
-        show_answers_button.click()
-        scrape_and_save.first_iteration = False
+    try :
+        show_answers_button = WebDriverWait(driver, 200).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#root > div > div.BodyContainer > div:nth-child(4) > div.styles_IslandContainer__Q1LMo.styles_IC_expanded__paAaR > div.styles_Container__EnYDl.styles_ContainerActive__-e3Z6.styles_contentBody__56j3w > div.styles_MainHeading__AV-pn > div > div')))
+        if scrape_and_save.first_iteration:
+            show_answers_button.click()
+            scrape_and_save.first_iteration = False
+    except TimeoutException:
+        print("Yeniden generate ediliyor.")
+        # Generate butonuna tıklama
+        generate_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#root > div > div.BodyContainer > div:nth-child(4) > div.styles_IslandContainer__Q1LMo > div.styles_InputGrid__UgoNG > button')))
+        generate_button.click()
+        try :
+            show_answers_button = WebDriverWait(driver, 900).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#root > div > div.BodyContainer > div:nth-child(4) > div.styles_IslandContainer__Q1LMo.styles_IC_expanded__paAaR > div.styles_Container__EnYDl.styles_ContainerActive__-e3Z6.styles_contentBody__56j3w > div.styles_MainHeading__AV-pn > div > div')))
+            if scrape_and_save.first_iteration:
+                show_answers_button.click()
+                scrape_and_save.first_iteration = False
+        except TimeoutException:
+                print("Show Answers butonu bulunamadı veya tıklanabilir değil.")
 
-    
+
     # Soru ve cevapları bulma
-    question_elements = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.XPATH, "//span[@class='styles_Question__FRNnc']")))
-    answer_elements = WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.XPATH, "//p[@class='styles_AnswerText__Y1oHC']")))
+    question_elements = WebDriverWait(driver, 100).until(EC.visibility_of_all_elements_located((By.XPATH, "//span[@class='styles_Question__FRNnc']")))
+    answer_elements = WebDriverWait(driver, 100).until(EC.visibility_of_all_elements_located((By.XPATH, "//p[@class='styles_AnswerText__Y1oHC']")))
     
     # Soru ve cevapları ekrana yazdırma
     for question, answer in zip(question_elements, answer_elements):
@@ -111,12 +124,12 @@ def scrape_and_save(job_title, skill_level, category, language=None):
 # Kullanıcıdan girdileri alma ve işlemi gerçekleştirme
 iterations = 8 # Yapılacak işlem sayısı
 innerIter= 10
-job_titles=["Web Developer","Software Engineer","Software Developer","Front End Developer","Network Engineer","Android Developer","Salesforce Developer","IOS Developer","SQL Developer",".NET Developer","	Python Developer","Game Developer","Data Engineer","Full Stack Developer","React Developer","UI Developer"]
-skill_levels=["Junior","Mid-level","Senior"]
-for title in range(job_titles):
-    for level in range (skill_levels):
+#job_titles=["Software Engineer","Software Developer","Front End Developer","Network Engineer","Android Developer","Salesforce Developer","IOS Developer","SQL Developer",".NET Developer","Python Developer","Game Developer","Data Engineer","Full Stack Developer","React Developer","UI Developer"]
+skill_levels=["Junior"]
+job_titles=["Front End Developer"]
+for title in job_titles:
+    for level in skill_levels:
         for _ in range(iterations):
-            job_titles.__len__
             # Selenium WebDriver'ı başlatma
             driver = webdriver.Chrome()
             # Web sitesine gidin
