@@ -67,12 +67,13 @@ def scrape_and_save(job_title, skill_level, category, language=None):
     
     #  Show Answers butonuna sadece ilk iterasyonda tıklama
     try :
-        show_answers_button = WebDriverWait(driver, 200).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#root > div > div.BodyContainer > div:nth-child(4) > div.styles_IslandContainer__Q1LMo.styles_IC_expanded__paAaR > div.styles_Container__EnYDl.styles_ContainerActive__-e3Z6.styles_contentBody__56j3w > div.styles_MainHeading__AV-pn > div > div')))
+        show_answers_button = WebDriverWait(driver, 300).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#root > div > div.BodyContainer > div:nth-child(4) > div.styles_IslandContainer__Q1LMo.styles_IC_expanded__paAaR > div.styles_Container__EnYDl.styles_ContainerActive__-e3Z6.styles_contentBody__56j3w > div.styles_MainHeading__AV-pn > div > div')))
         if scrape_and_save.first_iteration:
-            show_answers_button.click()
-            scrape_and_save.first_iteration = False
-    except TimeoutException:
-        print("Yeniden generate ediliyor.")
+                show_answers_button.click()
+                scrape_and_save.first_iteration = False
+            
+    except Exception as e:
+        print("Generate butonuna tıklanırken bir hata oluştu:", str(e) ,"Yeniden generate ediliyor.")
         # Generate butonuna tıklama
         generate_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#root > div > div.BodyContainer > div:nth-child(4) > div.styles_IslandContainer__Q1LMo > div.styles_InputGrid__UgoNG > button')))
         generate_button.click()
@@ -81,14 +82,20 @@ def scrape_and_save(job_title, skill_level, category, language=None):
             if scrape_and_save.first_iteration:
                 show_answers_button.click()
                 scrape_and_save.first_iteration = False
-        except TimeoutException:
+        except Exception as e:
                 print("Show Answers butonu bulunamadı veya tıklanabilir değil.")
 
 
     # Soru ve cevapları bulma
     question_elements = WebDriverWait(driver, 100).until(EC.visibility_of_all_elements_located((By.XPATH, "//span[@class='styles_Question__FRNnc']")))
-    answer_elements = WebDriverWait(driver, 100).until(EC.visibility_of_all_elements_located((By.XPATH, "//p[@class='styles_AnswerText__Y1oHC']")))
-    
+    try:
+        answer_elements = WebDriverWait(driver, 100).until(EC.visibility_of_all_elements_located((By.XPATH, "//p[@class='styles_AnswerText__Y1oHC']")))
+    except Exception as e:
+        print("Answers bulunamadı veya Show answers tekrar tıklandı.")
+        show_answers_button.click()
+        scrape_and_save.first_iteration = False
+        answer_elements = WebDriverWait(driver, 100).until(EC.visibility_of_all_elements_located((By.XPATH, "//p[@class='styles_AnswerText__Y1oHC']")))
+
     # Soru ve cevapları ekrana yazdırma
     for question, answer in zip(question_elements, answer_elements):
         # Soru tipini belirleme
@@ -112,21 +119,21 @@ def scrape_and_save(job_title, skill_level, category, language=None):
             answer_text = answer.text.split(": ", 1)[1]  # Cevap başlığını kaldır
             evaluator = "App"
         # Veritabanına kaydetme
-        c.execute("SELECT * FROM interview_questions WHERE question=? AND answer=?", (question_text, answer_text))
+        c.execute("SELECT * FROM interview_questions WHERE job_title=? AND skill_level=? AND question=?", (job_title, skill_level, question_text))
         existing_record = c.fetchone()
         if not existing_record:
             c.execute("INSERT INTO interview_questions (job_title, skill_level, category, question_type, evaluator, language, question, answer) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (job_title, skill_level, category, question_type, evaluator,language, question_text, answer_text))
             conn.commit()
     
     
-# İlk iterasyon için bir bayrak oluşturma
 
 # Kullanıcıdan girdileri alma ve işlemi gerçekleştirme
 iterations = 8 # Yapılacak işlem sayısı
 innerIter= 10
 #job_titles=["Software Engineer","Software Developer","Front End Developer","Network Engineer","Android Developer","Salesforce Developer","IOS Developer","SQL Developer",".NET Developer","Python Developer","Game Developer","Data Engineer","Full Stack Developer","React Developer","UI Developer"]
-skill_levels=["Junior"]
-job_titles=["Front End Developer"]
+skill_levels=["Junior","Mid-level","Senior"]
+job_titles=["Front End Developer","Network Engineer","Android Developer"]
+#skill_levels=["Senior"]
 for title in job_titles:
     for level in skill_levels:
         for _ in range(iterations):
@@ -134,6 +141,7 @@ for title in job_titles:
             driver = webdriver.Chrome()
             # Web sitesine gidin
             driver.get("https://recooty.com/tools/interview-question-generator/")
+            # İlk iterasyon için bir bayrak oluşturma
             scrape_and_save.first_iteration = True
             for i in range (innerIter):
                 job_title = title
