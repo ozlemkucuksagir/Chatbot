@@ -31,7 +31,7 @@ for row in c.fetchall():
     vectorized_answer = np.array(answer_embedding.embeddings[0])  # Embedding'i bir diziye dönüştürün
     
     # Vectorized answer'ı yeni tabloya ekleyin
-    c.execute("UPDATE new_interview_questions1 SET vectorized_answer = ? WHERE id = ?", (vectorized_answer, answer_id))
+    c.execute("UPDATE new_interview_questions2 SET vectorized_answer = ? WHERE id = ?", (vectorized_answer, answer_id))
     
     conn.commit()
 
