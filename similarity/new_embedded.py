@@ -6,7 +6,7 @@ import numpy as np
 conn = sqlite3.connect('interview_questions.db')
 c = conn.cursor()
 
-c.execute('''CREATE TABLE IF NOT EXISTS new_interview_questions9
+c.execute('''CREATE TABLE IF NOT EXISTS new_interview_questions3
              (id INTEGER PRIMARY KEY, job_title TEXT, skill_level TEXT, category TEXT, evaluator TEXT, question_type TEXT, language TEXT, question TEXT, answer TEXT, vectorized_answer BLOB)''')
 
 base_options = python.BaseOptions(model_asset_path='C:/Users/okucuksagir/Desktop/chatbot/embedded/bert_embedder.tflite')
@@ -17,7 +17,7 @@ c.execute("SELECT * FROM interview_questions")
 for row in c.fetchall():
     answer_id, job_title, skill_level, category, evaluator, question_type, language, question, answer = row
     
-    c.execute("INSERT INTO new_interview_questions9 (id, job_title, skill_level, category, evaluator, question_type, language, question, answer) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+    c.execute("INSERT INTO new_interview_questions3 (id, job_title, skill_level, category, evaluator, question_type, language, question, answer) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", 
               (answer_id, job_title, skill_level, category, evaluator, question_type, language, question, answer))
     
     # Cevabı vektörize edin
@@ -30,7 +30,7 @@ for row in c.fetchall():
     vectorized_answer_np = np.frombuffer(vectorized_answer_np, dtype=np.float32)   
     print(vectorized_answer_np.shape)
 
-    c.execute("UPDATE new_interview_questions9 SET vectorized_answer = ? WHERE id = ?", (vectorized_answer_bytes, answer_id))
+    c.execute("UPDATE new_interview_questions3 SET vectorized_answer = ? WHERE id = ?", (vectorized_answer_bytes, answer_id))
     
     conn.commit()
 
