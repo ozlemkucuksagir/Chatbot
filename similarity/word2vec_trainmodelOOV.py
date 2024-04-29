@@ -34,7 +34,7 @@ conn.close()
 word2vec_model = Word2Vec.load("word2vec_model.bin")
 
 # Test cümlesi
-test_sentence = "Interfaces can exclusively contain abstract methods, whereas abstract classes can include both abstract and concrete methods."
+test_sentence = "Interfaces cannot exclusively contain abstract methods."
 tokenized_test_sentence = word_tokenize(test_sentence.lower())
 
 # Test cümlesi için kelime vektörünü elde et
