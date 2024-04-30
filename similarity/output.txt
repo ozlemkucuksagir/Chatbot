@@ -1,0 +1,38 @@
+C:\Users\okucuksagir\Desktop\chatbot>"C:/Pronew_chatbot_flagembedding.py
+2024-04-30 16:42:03.738690: I tensorflow/cornt numerical results due to floating-point rronment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2024-04-30 16:42:04.666182: I tensorflow/cornt numerical results due to floating-point rronment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+Soru: What is the difference between abstrac
+Cevabınızı girin: Abstract classes can have ds.
+Benzerlik Skoru: 0.9999999
+
+C:\Users\okucuksagir\Desktop\chatbot>"C:/Pronew_chatbot_flagembedding.py
+2024-04-30 16:42:25.110821: I tensorflow/cornt numerical results due to floating-point rronment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2024-04-30 16:42:25.943917: I tensorflow/cornt numerical results due to floating-point rronment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+Soru: What is the difference between abstrac
+Cevabınızı girin: Interfaces can only have a
+Benzerlik Skoru: 0.9369928
+
+C:\Users\okucuksagir\Desktop\chatbot>"C:/Pronew_chatbot_flagembedding.py
+2024-04-30 16:42:39.299937: I tensorflow/cornt numerical results due to floating-point rronment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2024-04-30 16:42:40.158407: I tensorflow/cornt numerical results due to floating-point rronment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+Soru: What is the difference between abstrac
+Cevabınızı girin: Interfaces can exclusively
+Benzerlik Skoru: 0.8563181
+
+
+
+/////CANNOT
+C:\Users\okucuksagir\Desktop\chatbot>"C:/Pronew_chatbot_flagembedding.py
+fferent numerical results due to floatin/corg-point round-off errors from different nt r
+computation orders. To turn them off, se0`.t the environment variable `TF_ENABLE_ON/corEDNN_OPTS=0`.
+Soru: What is the difference between abstract class and interface in Java?
+Cevabınızı girin: Interfaces cannot exclusively contain abstract methods.
+Benzerlik Skoru: 0.8101332
+
+/////CHATGPT CEVABI
+C:\Users\okucuksagir\Desktop\chatbot>"C:/Program Files/Python311/python.exe" c:/Users/okucuksagir/Desktop/chatbot/similarity/new_chatbot_flagembedding.py
+2024-04-30 16:44:48.577324: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2024-04-30 16:44:49.659794: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+Soru: What is the difference between abstract class and interface in Java?
+Cevabınızı girin: Abstract classes can have both abstract and concrete methods, while interfaces can only declare abstract methods.
+Benzerlik Skoru: 0.99170804
